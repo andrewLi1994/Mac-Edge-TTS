@@ -1,7 +1,7 @@
 #!/bin/bash
 # test.sh - 单元/组件测试脚本
 
-echo "🧪 开始运行 LocalTTS 自动化测试..."
+echo "🧪 开始运行 Mac-Edge-TTS 自动化测试..."
 
 PASS=0
 FAIL=0

@@ -1,4 +1,4 @@
-# Mac 沉浸式全局朗读工具 (Local TTS)
+# Mac-Edge-TTS (Mac 沉浸式全局朗读工具)
 
 这是一个极客风格的 macOS 全局“划词朗读”小工具。它通过“系统服务 + Swift 极简悬浮窗 + Python Edge-TTS 引擎”组合而成，致力于提供**零内存占用、随叫随到、用完即走**的完美阅读体验。
 
@@ -13,7 +13,7 @@
 
 1. 打开终端 (Terminal)，进入本目录：
    ```bash
-   cd /path/to/localTTS-project
+   cd /path/to/Mac-Edge-TTS
    ```
 2. 执行一键安装脚本：
    ```bash

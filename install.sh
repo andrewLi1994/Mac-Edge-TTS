@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🚀 开始安装 Mac 原生沉浸式朗读工具 (LocalTTS-Project)..."
+echo "🚀 开始安装 Mac-Edge-TTS (Mac 原生沉浸式朗读工具)..."
 
 # 1. 检查并安装 edge-tts
 echo "📦 检查底层语音引擎 (edge-tts)..."
