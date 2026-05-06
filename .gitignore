@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Swift/Xcode
+.build/
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+*.swp
+*~.nib
+
+# Temporary files
+/tmp/
+*.mp3
