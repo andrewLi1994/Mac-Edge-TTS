@@ -64,10 +64,28 @@ TEXT="$1"
 if [ -z "$TEXT" ]; then exit 0; fi
 killall FloatingTTSUI 2&gt;/dev/null
 
-FILE="/tmp/macos_tts_current.mp3"
-edge-tts --text "$TEXT" --voice zh-CN-XiaoxiaoNeural --write-media "$FILE"
+LANG_DETECT=$(python3 -c "
+import sys, re
+text = sys.argv[1]
+zh_chars = len(re.findall(r'[\u4e00-\u9fff]', text))
+en_chars = len(re.findall(r'[a-zA-Z]', text))
+if zh_chars &gt; en_chars / 4:
+    print('zh')
+else:
+    print('en')
+" "$TEXT")
 
-"$HOME/.local/bin/FloatingTTSUI" "$FILE"</string>
+if [ "$LANG_DETECT" = "zh" ]; then
+    VOICE="zh-CN-XiaoxiaoNeural"
+else
+    VOICE="en-US-AriaNeural"
+fi
+
+FILE="/tmp/macos_tts_current.mp3"
+VTT_FILE="/tmp/macos_tts_current.vtt"
+edge-tts --text "$TEXT" --voice "$VOICE" --write-media "$FILE" --write-subtitles "$VTT_FILE"
+
+"$HOME/.local/bin/FloatingTTSUI" "$FILE" "$VTT_FILE"</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
