@@ -209,8 +209,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func toggleSpeed(_ sender: NSButton) {
-        let newRate: Float = (player.defaultRate > 1.0) ? 1.0 : 2.0
-        player.defaultRate = newRate
+        var currentDefault: Float = 1.0
+        if #available(macOS 13.0, *) {
+            currentDefault = player.defaultRate
+        } else {
+            currentDefault = player.rate
+        }
+        let newRate: Float = (currentDefault > 1.0) ? 1.0 : 2.0
+        if #available(macOS 13.0, *) {
+            player.defaultRate = newRate
+        }
         player.rate = newRate
         sender.title = (newRate > 1.0) ? "2x" : "1x"
     }

@@ -59,12 +59,15 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>export PATH="$HOME/Library/Python/3.14/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
-TEXT="$1"
+					<string>TEXT="$1"
 if [ -z "$TEXT" ]; then exit 0; fi
 killall FloatingTTSUI 2&gt;/dev/null
 
-LANG_DETECT=$(python3 -c "
+INSTALL_DIR="__INSTALL_DIR__"
+EDGE_TTS="$INSTALL_DIR/venv/bin/edge-tts"
+PYTHON3="$INSTALL_DIR/venv/bin/python3"
+
+LANG_DETECT=$("$PYTHON3" -c "
 import sys, re
 text = sys.argv[1]
 zh_chars = len(re.findall(r'[\u4e00-\u9fff]', text))
@@ -83,7 +86,7 @@ fi
 
 FILE="/tmp/macos_tts_current.mp3"
 VTT_FILE="/tmp/macos_tts_current.vtt"
-edge-tts --text "$TEXT" --voice "$VOICE" --write-media "$FILE" --write-subtitles "$VTT_FILE"
+"$EDGE_TTS" --text "$TEXT" --voice "$VOICE" --write-media "$FILE" --write-subtitles "$VTT_FILE"
 
 "$HOME/.local/bin/FloatingTTSUI" "$FILE" "$VTT_FILE"</string>
 					<key>CheckedForUserDefaultShell</key>
