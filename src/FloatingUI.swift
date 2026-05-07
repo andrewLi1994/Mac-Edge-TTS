@@ -115,7 +115,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.standardWindowButton(.zoomButton)?.isHidden = true
         
         if let closeBtn = window.standardWindowButton(.closeButton) {
-            closeBtn.setFrameOrigin(NSPoint(x: 10, y: (controlsHeight - closeBtn.frame.height) / 2))
+            // 调整到更标准的 macOS 边距
+            closeBtn.setFrameOrigin(NSPoint(x: 12, y: 12)) 
         }
         
         // --- 倒退 5 秒按钮 ---
@@ -140,6 +141,32 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         playerView.player = player
         playerView.showsFullScreenToggleButton = false
         playerView.controlsStyle = .inline
+        
+        // 延迟执行，清除 AVPlayerView 内部所有背景（模糊、layer、NSBox 等）
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            func clearBackgrounds(_ view: NSView) {
+                // 清除 NSVisualEffectView 毛玻璃背景
+                if let effectView = view as? NSVisualEffectView {
+                    effectView.alphaValue = 0
+                }
+                // 清除 NSBox 的填充色
+                if let box = view as? NSBox {
+                    box.fillColor = .clear
+                    box.borderColor = .clear
+                    box.isTransparent = true
+                }
+                // 清除 layer 级别的背景色
+                view.wantsLayer = true
+                if view !== playerView { // 保留 playerView 自身的 layer 不动
+                    view.layer?.backgroundColor = NSColor.clear.cgColor
+                }
+                for subview in view.subviews {
+                    clearBackgrounds(subview)
+                }
+            }
+            clearBackgrounds(playerView)
+        }
+        
         window.contentView?.addSubview(playerView)
         
         // --- 倍速按钮 ---
@@ -155,14 +182,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.contentView?.addSubview(speedBtn)
         
         // --- 字幕显示区域 ---
-        // 恢复正常宽度和居中对齐，使用大字号 RSVP 模式
-        subtitleLabel = NSTextField(frame: NSRect(x: 15, y: controlsHeight, width: windowWidth - 30, height: windowHeight - controlsHeight - 10))
+        // 将字幕区域在控制栏上方完全居中
+        let subtitleAreaHeight = windowHeight - controlsHeight
+        let labelHeight: CGFloat = 40
+        let labelY = controlsHeight + (subtitleAreaHeight - labelHeight) / 2
+        subtitleLabel = NSTextField(frame: NSRect(x: 15, y: labelY, width: windowWidth - 30, height: labelHeight))
         subtitleLabel.isEditable = false
         subtitleLabel.isBordered = false
         subtitleLabel.backgroundColor = .clear
         subtitleLabel.textColor = NSColor(red: 1.0, green: 0.84, blue: 0.0, alpha: 1.0)
-        subtitleLabel.alignment = .center // 居中显示
-        subtitleLabel.font = NSFont.systemFont(ofSize: 24, weight: .bold) // 大字号
+        subtitleLabel.alignment = .center
+        subtitleLabel.font = NSFont.systemFont(ofSize: 26, weight: .bold) // 稍微加大字号增强平衡感
         subtitleLabel.stringValue = "..."
         subtitleLabel.cell?.wraps = false
         window.contentView?.addSubview(subtitleLabel)
