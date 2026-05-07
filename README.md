@@ -14,16 +14,17 @@
 
 > **前置要求**：仅需 macOS 系统。首次安装时如系统缺少组件，安装器会自动弹窗引导安装。
 
-### 方式 A：Finder 操作（适合新手）
+### 方式 A：终端一行命令（最简单 ✅）
+打开终端 (Terminal)，粘贴以下命令并回车：
+```bash
+cd ~/Downloads/Mac-Edge-TTS-main && xattr -cr . && ./install.command
+```
+
+### 方式 B：Finder 操作
 1. 下载并解压本项目
 2. 双击 **`install.command`**
-3. 如果弹出安全提示，打开 **系统设置 → 隐私与安全性**，往下滚找到「已阻止 install.command」，点击 **"仍然打开"**
-4. 等待安装完成（约 1-2 分钟）
-
-### 方式 B：终端一行命令（推荐）
-```bash
-cd ~/Downloads/Mac-Edge-TTS-main && xattr -d com.apple.quarantine install.command && ./install.command
-```
+3. 如果弹出安全提示，打开 **系统设置 → 隐私与安全性**，往下滚点击 **"仍然打开"**
+4. 等待安装完成
 
 ## ⚙️ 绑定快捷键（必需）
 安装成功后，macOS 已经注册了这个服务，你需要给它绑定一个顺手的快捷键：

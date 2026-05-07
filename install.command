@@ -8,6 +8,9 @@ set -e
 # 切换到脚本所在目录（双击运行时 cwd 可能不对）
 cd "$(dirname "$0")"
 
+# 清除 macOS 隔离标记（从 GitHub 下载的文件会被标记，导致 Gatekeeper 拦截）
+xattr -cr . 2>/dev/null || true
+
 clear
 echo ""
 echo "  ╔══════════════════════════════════════════════╗"
@@ -97,6 +100,7 @@ echo "  🛠️  [3/3] 安装播放器与系统服务..."
 mkdir -p "$BIN_DIR"
 cp "./bin/FloatingTTSUI" "$BIN_DIR/FloatingTTSUI"
 chmod +x "$BIN_DIR/FloatingTTSUI"
+xattr -d com.apple.quarantine "$BIN_DIR/FloatingTTSUI" 2>/dev/null || true
 echo "       ✅ 播放器已安装"
 
 # 安装 Automator 服务（动态写入 edge-tts 路径）
