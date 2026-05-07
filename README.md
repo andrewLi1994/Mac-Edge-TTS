@@ -10,21 +10,15 @@
 - **RSVP 沉浸式字幕**：引入快速串行视觉呈现 (RSVP) 模式，利用苹果原生 NLP 引擎实现智能分词，让文字在屏幕中心静止闪现，彻底消除扫视带来的眼球疲劳。
 - **零负担**：没有后台常驻进程，不占系统内存。
 
-## 📦 安装（双击即可）
+## 📦 一键安装
 
-> **前置要求**：仅需 macOS 系统。首次安装时如系统缺少组件，安装器会自动弹窗引导安装。
-
-### 方式 A：终端一行命令（最简单 ✅）
 打开终端 (Terminal)，粘贴以下命令并回车：
+
 ```bash
-cd ~/Downloads/Mac-Edge-TTS-main && xattr -cr . && ./install.command
+curl -fsSL https://raw.githubusercontent.com/andrewLi1994/Mac-Edge-TTS/main/install.sh | bash
 ```
 
-### 方式 B：Finder 操作
-1. 下载并解压本项目
-2. 双击 **`install.command`**
-3. 如果弹出安全提示，打开 **系统设置 → 隐私与安全性**，往下滚点击 **"仍然打开"**
-4. 等待安装完成
+安装器会自动完成所有步骤：检测环境 → 安装语音引擎 → 下载播放器 → 注册系统服务。
 
 ## ⚙️ 绑定快捷键（必需）
 安装成功后，macOS 已经注册了这个服务，你需要给它绑定一个顺手的快捷键：
@@ -42,3 +36,8 @@ cd ~/Downloads/Mac-Edge-TTS-main && xattr -cr . && ./install.command
 - `src/FloatingUI.swift`：基于 AVFoundation、AVKit 和 NaturalLanguage 编写的原生播放器源码。
 - `src/document.wflow`：macOS Automator 服务模板，安装时自动配置路径。
 - 语音引擎 `edge-tts` 安装在独立虚拟环境中，不污染系统 Python。
+
+## 🗑️ 卸载
+```bash
+rm -rf ~/.local/share/mac-edge-tts ~/.local/bin/FloatingTTSUI ~/Library/Services/微软朗读.workflow
+```
