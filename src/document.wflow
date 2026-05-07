@@ -67,21 +67,39 @@ INSTALL_DIR="__INSTALL_DIR__"
 EDGE_TTS="$INSTALL_DIR/venv/bin/edge-tts"
 PYTHON3="$INSTALL_DIR/venv/bin/python3"
 
-LANG_DETECT=$("$PYTHON3" -c "
-import sys, re
-text = sys.argv[1]
-zh_chars = len(re.findall(r'[\u4e00-\u9fff]', text))
-en_chars = len(re.findall(r'[a-zA-Z]', text))
-if zh_chars &gt; en_chars / 4:
-    print('zh')
-else:
-    print('en')
+# 识别语言并输出 Voice 名字，如果失败输出 ERROR
+VOICE=$("$PYTHON3" -c "
+import sys
+from langdetect import detect, DetectorFactory
+DetectorFactory.seed = 0
+try:
+    text = sys.argv[1]
+    lang = detect(text)
+    mapping = {
+        'zh-cn': 'zh-CN-XiaoxiaoNeural',
+        'zh-tw': 'zh-TW-HsiaoChenNeural',
+        'en': 'en-US-AriaNeural',
+        'ja': 'ja-JP-NanamiNeural',
+        'ko': 'ko-KR-SunHiNeural',
+        'fr': 'fr-FR-DeniseNeural',
+        'de': 'de-DE-KatjaNeural',
+        'es': 'es-ES-ElviraNeural',
+        'it': 'it-IT-ElsaNeural',
+        'ru': 'ru-RU-SvetlanaNeural',
+        'pt': 'pt-BR-FranciscaNeural',
+        'vi': 'vi-VN-HoaiMyNeural'
+    }
+    if lang.startswith('zh'):
+        print(mapping.get('zh-cn'))
+    else:
+        print(mapping.get(lang, 'ERROR'))
+except:
+    print('ERROR')
 " "$TEXT")
 
-if [ "$LANG_DETECT" = "zh" ]; then
-    VOICE="zh-CN-XiaoxiaoNeural"
-else
-    VOICE="en-US-AriaNeural"
+if [ "$VOICE" = "ERROR" ] || [ -z "$VOICE" ]; then
+    osascript -e 'display notification "无法自动识别选中文本的语言，请尝试选中更多文字。" with title "微软朗读"'
+    exit 0
 fi
 
 FILE="/tmp/macos_tts_current.mp3"

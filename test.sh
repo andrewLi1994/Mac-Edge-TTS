@@ -49,6 +49,59 @@ echo "执行测试用例 2: 原生 UI 源码健康度测试 (Swift 编译)"
 assert_success swiftc ./src/FloatingUI.swift -o /tmp/TestUI_Temp
 
 echo "----------------------------------------"
+echo "执行测试用例 3: 多语言自动识别逻辑测试"
+
+test_lang_detection() {
+    local text="$1"
+    local expected_voice_part="$2"
+    
+    # 模拟 document.wflow 中的 Python 识别逻辑
+    local detected_voice=$(python3 -c "
+import sys
+try:
+    from langdetect import detect, DetectorFactory
+    DetectorFactory.seed = 0
+    text = sys.argv[1]
+    lang = detect(text)
+    mapping = {
+        'zh-cn': 'zh-CN-XiaoxiaoNeural', 'en': 'en-US-AriaNeural',
+        'ja': 'ja-JP-NanamiNeural', 'ko': 'ko-KR-SunHiNeural',
+        'fr': 'fr-FR-DeniseNeural', 'de': 'de-DE-KatjaNeural',
+        'es': 'es-ES-ElviraNeural', 'it': 'it-IT-ElsaNeural',
+        'ru': 'ru-RU-SvetlanaNeural'
+    }
+    if lang.startswith('zh'): print(mapping.get('zh-cn'))
+    else: print(mapping.get(lang, 'ERROR'))
+except ImportError:
+    print('SKIP_NO_LIB')
+except:
+    print('ERROR')
+" "$text")
+
+    if [ "$detected_voice" = "SKIP_NO_LIB" ]; then
+        echo "⚠️  [跳过] 未检测到 langdetect 库，请先运行安装脚本"
+        return 0
+    fi
+
+    if [[ "$detected_voice" == *"$expected_voice_part"* ]]; then
+        echo "✅ [通过] 识别: \"${text:0:15}...\" -> $detected_voice"
+        ((PASS++))
+    else
+        echo "❌ [失败] 识别错误: \"${text:0:15}...\" 预期包含 $expected_voice_part，实际得到 $detected_voice"
+        ((FAIL++))
+    fi
+}
+
+test_lang_detection "你好，世界" "Xiaoxiao"
+test_lang_detection "Hello world, this is a test" "Aria"
+test_lang_detection "こんにちは世界、これはテストです" "Nanami"
+test_lang_detection "Bonjour le monde, c'est un test" "Denise"
+test_lang_detection "Hallo Welt, das ist ein Test" "Katja"
+test_lang_detection "Hola Mundo, esto es una prueba" "Elvira"
+test_lang_detection "Buongiorno a tutti, questa è una prova" "Elsa"
+test_lang_detection "Привет всем, это проверка системы" "Svetlana"
+
+echo "----------------------------------------"
 echo "📊 测试报告: 成功 $PASS 项，失败 $FAIL 项"
 
 if [ $FAIL -gt 0 ]; then

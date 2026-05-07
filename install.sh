@@ -61,12 +61,12 @@ echo "  📦 [2/4] 安装语音引擎..."
 
 mkdir -p "$INSTALL_DIR"
 
-if [ ! -f "$INSTALL_DIR/venv/bin/edge-tts" ]; then
+if [ ! -f "$INSTALL_DIR/venv/bin/python3" ] || ! "$INSTALL_DIR/venv/bin/python3" -c "import langdetect" &>/dev/null; then
     echo "       ⚙️ 正在创建独立运行环境..."
     python3 -m venv "$INSTALL_DIR/venv"
     "$INSTALL_DIR/venv/bin/pip" install --upgrade pip -q 2>/dev/null || true
-    echo "       ⚙️ 正在安装 edge-tts（可能需要 1-2 分钟）..."
-    "$INSTALL_DIR/venv/bin/pip" install edge-tts -q
+    echo "       ⚙️ 正在安装 edge-tts 与 langdetect（可能需要 1-2 分钟）..."
+    "$INSTALL_DIR/venv/bin/pip" install edge-tts langdetect -q
 
     if [ ! -f "$INSTALL_DIR/venv/bin/edge-tts" ]; then
         echo ""
