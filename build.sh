@@ -23,12 +23,17 @@ fi
 mkdir -p bin
 mkdir -p "$HOME/.local/bin"
 
-# 3. 编译源码
-echo -e "📦 正在编译 ${BLUE}src/FloatingUI.swift${NC}..."
+# 3. 编译源码（Universal Binary：同时支持 Apple Silicon 和 Intel Mac）
+echo -e "📦 正在编译 ${BLUE}src/FloatingUI.swift${NC} (Universal Binary)..."
 
-# 编译为项目内的二进制文件（用于 Git 提交和分发）
-if swiftc src/FloatingUI.swift -o bin/FloatingTTSUI; then
-    echo -e "${GREEN}✅ 成功编译至 ./bin/FloatingTTSUI${NC}"
+# 分别编译两种架构
+if swiftc -target arm64-apple-macos11 src/FloatingUI.swift -o bin/FloatingTTSUI_arm64 && \
+   swiftc -target x86_64-apple-macos11 src/FloatingUI.swift -o bin/FloatingTTSUI_x86_64; then
+    # 合并为 Universal Binary
+    lipo -create bin/FloatingTTSUI_arm64 bin/FloatingTTSUI_x86_64 -output bin/FloatingTTSUI
+    rm bin/FloatingTTSUI_arm64 bin/FloatingTTSUI_x86_64
+    echo -e "${GREEN}✅ 成功编译 Universal Binary 至 ./bin/FloatingTTSUI${NC}"
+    echo -e "   架构：$(lipo -archs bin/FloatingTTSUI)"
 else
     echo -e "${YELLOW}❌ 编译失败，请检查源码错误。${NC}"
     exit 1
