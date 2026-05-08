@@ -101,6 +101,9 @@ mkdir -p "$BIN_DIR"
 cp "./bin/FloatingTTSUI" "$BIN_DIR/FloatingTTSUI"
 chmod +x "$BIN_DIR/FloatingTTSUI"
 xattr -d com.apple.quarantine "$BIN_DIR/FloatingTTSUI" 2>/dev/null || true
+
+# 复制语言检测脚本
+cp "./src/detect_lang.py" "$INSTALL_DIR/detect_lang.py"
 echo "       ✅ 播放器已安装"
 
 # 安装 Automator 服务（动态写入 edge-tts 路径）

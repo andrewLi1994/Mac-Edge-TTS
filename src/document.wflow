@@ -67,35 +67,8 @@ INSTALL_DIR="__INSTALL_DIR__"
 EDGE_TTS="$INSTALL_DIR/venv/bin/edge-tts"
 PYTHON3="$INSTALL_DIR/venv/bin/python3"
 
-# 识别语言并输出 Voice 名字，如果失败输出 ERROR
-VOICE=$("$PYTHON3" -c "
-import sys
-from langdetect import detect, DetectorFactory
-DetectorFactory.seed = 0
-try:
-    text = sys.argv[1]
-    lang = detect(text)
-    mapping = {
-        'zh-cn': 'zh-CN-XiaoxiaoNeural',
-        'zh-tw': 'zh-TW-HsiaoChenNeural',
-        'en': 'en-US-AriaNeural',
-        'ja': 'ja-JP-NanamiNeural',
-        'ko': 'ko-KR-SunHiNeural',
-        'fr': 'fr-FR-DeniseNeural',
-        'de': 'de-DE-KatjaNeural',
-        'es': 'es-ES-ElviraNeural',
-        'it': 'it-IT-ElsaNeural',
-        'ru': 'ru-RU-SvetlanaNeural',
-        'pt': 'pt-BR-FranciscaNeural',
-        'vi': 'vi-VN-HoaiMyNeural'
-    }
-    if lang.startswith('zh'):
-        print(mapping.get('zh-cn'))
-    else:
-        print(mapping.get(lang, 'ERROR'))
-except:
-    print('ERROR')
-" "$TEXT")
+# 识别语言并输出 Voice 名字（调用独立脚本，避免 XML 转义问题）
+VOICE=$("$PYTHON3" "$INSTALL_DIR/detect_lang.py" "$TEXT")
 
 if [ "$VOICE" = "ERROR" ] || [ -z "$VOICE" ]; then
     osascript -e 'display notification "无法自动识别选中文本的语言，请尝试选中更多文字。" with title "微软朗读"'

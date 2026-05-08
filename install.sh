@@ -87,6 +87,9 @@ echo "  🔨 [3/4] 下载播放器..."
 mkdir -p "$BIN_DIR"
 curl -fsSL "$REPO_BASE/bin/FloatingTTSUI" -o "$BIN_DIR/FloatingTTSUI"
 chmod +x "$BIN_DIR/FloatingTTSUI"
+
+# 下载语言检测脚本
+curl -fsSL "$REPO_BASE/src/detect_lang.py" -o "$INSTALL_DIR/detect_lang.py"
 echo "       ✅ 播放器已安装"
 
 # ============================================================

@@ -36,7 +36,8 @@ curl -fsSL https://raw.githubusercontent.com/andrewLi1994/Mac-Edge-TTS/main/inst
 - `bin/FloatingTTSUI`：预编译的 Universal Binary（Intel + Apple Silicon），无需 Xcode。
 - `src/FloatingUI.swift`：基于 AVFoundation、AVKit 和 NaturalLanguage 编写的原生播放器源码。
 - `src/document.wflow`：macOS Automator 服务模板，安装时自动配置路径。
-- 语音引擎 `edge-tts` 安装在独立虚拟环境中，不污染系统 Python。
+- `src/detect_lang.py`：语言检测模块，基于 Unicode 字符集优先判断 + `langdetect` 兜底，确保中英混排等复杂文本能准确匹配对应语音；安装时自动部署到 `~/.local/share/mac-edge-tts/`。
+- 语音引擎 `edge-tts` 与 `langdetect` 均安装在独立虚拟环境中，不污染系统 Python。
 
 ## 🗑️ 卸载
 ```bash

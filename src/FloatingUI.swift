@@ -103,7 +103,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                           styleMask: [.titled, .closable, .fullSizeContentView], 
                           backing: .buffered, 
                           defer: false)
-        window.setFrameTopLeftPoint(NSPoint(x: screenRect.maxX - windowWidth - 20, y: screenRect.maxY - 40))
+        let centerX = screenRect.origin.x + (screenRect.size.width - windowWidth) / 2
+        let topY = screenRect.origin.y + screenRect.size.height
+        window.setFrameTopLeftPoint(NSPoint(x: centerX, y: topY))
         window.level = .floating
         window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden
